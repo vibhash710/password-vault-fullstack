@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <script>
+    // FOUC (Flash Of Unstyled Content)
+    // Browser loads HTML
+    // <html> has no dark class yet
+    // Tailwind default styles apply → light theme
+    // React loads
+    // ThemeProvider initializes state from localStorage
+    // useEffect runs
+    // Adds dark class to <html>
+    // That tiny gap between step 1 and 3 =
+    // light flash → dark theme
+    (function () {
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark" || (!theme)) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Vault</title>
+  <script src="https://cdn.lordicon.com/lordicon.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>

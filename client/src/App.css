@@ -1,0 +1,35 @@
+/* ===================================
+   Browser Autofill Override Styles
+   =================================== */
+
+/* Light Mode Autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    /* Match your bg-slate-50 color */
+    -webkit-box-shadow: 0 0 0 1000px rgb(248 250 252) inset !important;
+    /* Match your text-slate-900 color */
+    -webkit-text-fill-color: rgb(15 23 42) !important;
+    /* Delay background color change */
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Dark Mode Autofill */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+    /* Match your bg-slate-950/40 color */
+    -webkit-box-shadow: 0 0 0 1000px rgba(2, 6, 23, 0.4) inset !important;
+    /* Match your text-white color */
+    -webkit-text-fill-color: rgb(255 255 255) !important;
+    /* Delay background color change */
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Firefox Autofill (if needed) */
+input:-moz-autofill,
+input:-moz-autofill-preview {
+    filter: none !important;
+}
