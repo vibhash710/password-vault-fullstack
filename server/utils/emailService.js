@@ -1,16 +1,16 @@
 const nodemailer = require('nodemailer');
 
 // Create transporter
+const nodemailer = require("nodemailer");
+
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
-  secure: true, // important
+  secure: true,
+  family: 4, // force IPv4 (fixes Render SMTP issue)
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_APP_PASSWORD
-  },
-  tls: {
-    rejectUnauthorized: false
   }
 });
 
