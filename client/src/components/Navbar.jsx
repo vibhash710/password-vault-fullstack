@@ -242,7 +242,8 @@ const Navbar = () => {
                             <>
                                 <Link
                                     to="/signin"
-                                    className="block text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 px-3 py-2 transition-colors"
+                                    onClick={() => setIsOpen(false)}
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg font-medium transition-all shadow-lg hover:shadow-indigo-500/20"
                                 >
                                     Log In
                                 </Link>
