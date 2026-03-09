@@ -10,6 +10,8 @@ connectDB();
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 // ========== MIDDLEWARE ==========
 
 app.use(cors({
