@@ -1,32 +1,12 @@
-const nodemailer = require('nodemailer');
-const dns = require("dns");
+const { Resend } = require('resend');
 
-dns.setDefaultResultOrder("ipv4first");
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASSWORD
-  }
-});
-
-// Verify SMTP connection
-transporter.verify((error, success) => {
-    if (error) {
-        console.error("SMTP connection error:", error);
-    } else {
-        console.log("SMTP server ready to send emails");
-    }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Send verification OTP email
-const sendVerificationOTP = async (email, otp) => {
+const sendVerificationOTP = async (email, otp, name) => {
     try {
-        const mailOptions = {
-            from: `"Password Vault" <${process.env.EMAIL_USER}>`,
+        const response = await resend.emails.send({
+            from: process.env.EMAIL_FROM,
             to: email,
             subject: 'Verify Your Email - Password Vault',
             html: `
@@ -109,6 +89,7 @@ const sendVerificationOTP = async (email, otp) => {
                             <h1>🔐 Verify Your Email</h1>
                         </div>
                         <div class="content">
+                            <h2>Hi ${name}!</h2>
                             <p>Thank you for signing up for Password Vault. To complete your registration, please verify your email address using the code below:</p>
                             
                             <div class="otp-box">
@@ -137,11 +118,10 @@ const sendVerificationOTP = async (email, otp) => {
                 </body>
                 </html>
             `
-        };
+        });
 
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Verification email sent:', info.messageId);
-        return info;
+        console.log('Verification email sent:', response.id);
+        return { success: true };
 
     } catch (error) {
         console.error('Email sending failed:', error);
@@ -150,10 +130,10 @@ const sendVerificationOTP = async (email, otp) => {
 };
 
 // Send password reset OTP
-const sendPasswordResetOTP = async (email, otp) => {
+const sendPasswordResetOTP = async (email, otp, name) => {
     try {
-        const mailOptions = {
-            from: `"Password Vault" <${process.env.EMAIL_USER}>`,
+        const response = await resend.emails.send({
+            from: process.env.EMAIL_FROM,
             to: email,
             subject: 'Reset Your Password - Password Vault',
             html: `
@@ -236,6 +216,7 @@ const sendPasswordResetOTP = async (email, otp) => {
                             <h1>🔑 Reset Your Password</h1>
                         </div>
                         <div class="content">
+                            <h2>Hi ${name}!</h2>
                             <p>We received a request to reset your password. Use the code below to proceed:</p>
                             
                             <div class="otp-box">
@@ -261,11 +242,10 @@ const sendPasswordResetOTP = async (email, otp) => {
                 </body>
                 </html>
             `
-        };
+        });
 
-        const info = await transporter.sendMail(mailOptions);
-        console.log('✅ Password reset email sent:', info.messageId);
-        return info;
+        console.log('Password reset email sent:', response.id);
+        return { success: true };
 
     } catch (error) {
         console.error('Email sending failed:', error);
