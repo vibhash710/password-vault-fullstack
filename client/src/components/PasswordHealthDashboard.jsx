@@ -114,35 +114,50 @@ const PasswordHealthDashboard = () => {
             // Calculate strength
             const strength = calculatePasswordStrength(plainPassword);
 
-            // Check if weak
+            const daysSinceUpdate = Math.floor(
+                (Date.now() - new Date(pwd.updatedAt)) / (1000 * 60 * 60 * 24)
+            );
+
+            // Count password reuse
+            if (!passwordCounts[plainPassword]) {
+                passwordCounts[plainPassword] = [];
+            }
+
+            passwordCounts[plainPassword].push({
+                ...pwd,
+                plainPassword,
+                strength
+            });
+
+            // Detect weak passwords
             if (strength.score < 60) {
                 weak.push({ ...pwd, plainPassword, strength });
             }
 
-            // Check for reuse
-            if (passwordCounts[plainPassword]) {
-                passwordCounts[plainPassword].push(pwd);
-            } else {
-                passwordCounts[plainPassword] = [pwd];
-            }
-
-            // Check if old (90+ days)
-            const daysSinceUpdate = Math.floor((Date.now() - new Date(pwd.updatedAt)) / (1000 * 60 * 60 * 24));
+            // Detect old passwords
             if (daysSinceUpdate > 90) {
-                old.push({ ...pwd, daysSinceUpdate });
+                old.push({
+                    ...pwd,
+                    plainPassword,
+                    daysSinceUpdate,
+                    strength
+                });
             }
 
             // Add to good if strong and not reused and recent
-            if (strength.score >= 70 && daysSinceUpdate <= 90) {
+            if (strength.score >= 60 && daysSinceUpdate <= 90) {
                 good.push({ ...pwd, plainPassword, strength });
             }
         });
 
-        // Find reused passwords
-        Object.entries(passwordCounts).forEach(([password, pwds]) => {
+        // Detect reused passwords
+        Object.values(passwordCounts).forEach((pwds) => {
             if (pwds.length > 1) {
                 pwds.forEach(pwd => {
-                    reused.push({ ...pwd, plainPassword: password, count: pwds.length });
+                    reused.push({
+                        ...pwd,
+                        count: pwds.length
+                    });
                 });
             }
         });
@@ -166,8 +181,8 @@ const PasswordHealthDashboard = () => {
         let score = 100;
 
         // Deduct points for issues
-        score -= (weakCount / total) * 40; // Weak passwords: up to -40
-        score -= (reusedCount / total) * 30; // Reused passwords: up to -30
+        score -= (reusedCount / total) * 40; // Reused passwords: up to -40
+        score -= (weakCount / total) * 30; // Weak passwords: up to -30
         score -= (oldCount / total) * 30; // Old passwords: up to -30
 
         score = Math.max(0, Math.round(score));
