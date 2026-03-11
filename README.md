@@ -333,7 +333,7 @@ This project is licensed under the MIT License.
 **Vibhash Mishra**
 
 - Website: [www.passwordvault.site](https://www.passwordvault.site)
-- GitHub: [@vibhash710](https://github.com/YOUR_USERNAME)
+- GitHub: [@vibhash710](https://github.com/vibhash710)
 
 ## 🙏 Acknowledgments
 
