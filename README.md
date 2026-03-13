@@ -22,7 +22,7 @@ A secure, full-stack password management application built with the MERN stack. 
 - 📊 **Strength Indicator** - Real-time password strength analysis
 
 ### Security Features
-- 🔐 **Zero-Knowledge Architecture** - Server never sees unencrypted passwords
+- 🔐 **Encrypted Password Storage** - Credentials are encrypted using a master-password-derived key before being stored
 - 🤖 **AI Password Generator** - Gemini-powered contextual password generation
 - 🔑 **JWT Authentication** – Secure session management with access & refresh tokens
 - 🍪 **Secure Cookies** – HTTP-only cookies prevent token theft via XSS
