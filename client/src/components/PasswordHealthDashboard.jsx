@@ -7,6 +7,8 @@ import { calculatePasswordStrength } from '../utils/passwordStrength';
 const PasswordHealthDashboard = () => {
     const [passwords, setPasswords] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [decrypting, setDecrypting] = useState(false);
+
     const [decryptedPasswords, setDecryptedPasswords] = useState({});
     const [visiblePasswords, setVisiblePasswords] = useState({});
     const [masterPassword, setMasterPassword] = useState('');
@@ -53,7 +55,7 @@ const PasswordHealthDashboard = () => {
             return;
         }
 
-        setLoading(true);
+        setDecrypting(true);
 
         try {
             const response = await api.post('/passwords/decrypt-all', {
@@ -82,20 +84,16 @@ const PasswordHealthDashboard = () => {
             toast.success('Vault analysis complete!');
 
         } catch (error) {
-            console.error('Decryption error:', error);
-
-            setDecryptedPasswords({});
-            setAnalysisComplete(false);
-
             if (error.response?.status === 401) {
                 toast.error('Incorrect master password');
-            } else {
-                toast.error('Failed to decrypt passwords');
+                setMasterPassword(''); // clear input
+                return; // prevent further execution
             }
-
-            return;
+            
+            console.error('Decryption error:', error);
+            toast.error('Failed to decrypt passwords');
         } finally {
-            setLoading(false);
+            setDecrypting(false);
         }
     };
 
@@ -288,10 +286,10 @@ const PasswordHealthDashboard = () => {
                             </button>
                             <button
                                 onClick={decryptAllPasswords}
-                                disabled={!masterPassword}
+                                disabled={!masterPassword || decrypting}
                                 className="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-500 hover:to-purple-500 transition-all font-bold shadow-lg disabled:opacity-50"
                             >
-                                Analyze
+                                {decrypting ? "Analyzing..." : "Analyze"}
                             </button>
                         </div>
                     </div>
