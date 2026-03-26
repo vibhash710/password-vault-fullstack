@@ -12,7 +12,7 @@ const generalLimiter = rateLimit({
     },
     // Return rate limit info
     standardHeaders: true,
-    legacyHeaders: false, 
+    legacyHeaders: false,
 });
 
 // ========== STRICT AUTH LIMITER ==========
@@ -28,6 +28,26 @@ const authLimiter = rateLimit({
     },
     standardHeaders: true,
     legacyHeaders: false,
+    handler: (req, res) => {
+        console.log('RATE LIMIT HIT!', {
+            ip: req.ip,
+            forwardedFor: req.headers['x-forwarded-for'],
+            path: req.path,
+            attempts: req.rateLimit
+        });
+        res.status(429).json({
+            success: false,
+            message: 'Too many authentication attempts, please try again after 15 minutes'
+        });
+    },
+    skip: (req) => {
+        console.log('Request from:', {
+            ip: req.ip,
+            forwardedFor: req.headers['x-forwarded-for'],
+            path: req.path
+        });
+        return false;
+    }
 });
 
 // ========== EMAIL LIMITER ==========
