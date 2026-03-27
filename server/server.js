@@ -35,12 +35,13 @@ app.use(passport.initialize());
 //Apply general rate limiter to all routes
 app.use(generalLimiter);
 
+const getClientIP = require('../utils/getClientIP');
 app.use((req, res, next) => {
   res.on('finish', () => {
     // Log only when rate limit actually blocks request
     if (res.statusCode === 429) {
       console.warn(
-        `Rate limit exceeded | IP: ${req.ip} | Route: ${req.originalUrl}`
+        `Rate limit exceeded | IP: ${getClientIP(req)} | Route: ${req.originalUrl}`
       );
     }
   });

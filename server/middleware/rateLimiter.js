@@ -1,14 +1,6 @@
 const rateLimit = require('express-rate-limit');
 
-// Get real client IP
-const getClientIP = (req) => {
-    const forwardedFor = req.headers['x-forwarded-for'];
-    if (forwardedFor) {
-        const ips = forwardedFor.split(',');
-        return ips[0].trim(); // First IP = real user IP
-    }
-    return req.ip; // Fallback
-};
+const getClientIP = require('../utils/getClientIP');
 
 // ========== GENERAL API RATE LIMITER ==========
 
